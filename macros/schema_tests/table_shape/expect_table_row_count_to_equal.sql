@@ -18,11 +18,16 @@
                                                 group_by,
                                                 row_condition
                                                 ) -%}
-{% set expression %}
-count(*) = {{ value }}
+{% set expression_left_hand_side %}
+count(*)
 {% endset %}
+{% set expression_right_hand_side %}
+{{ value }}
+{% endset %}
+
 {{ dbt_expectations.expression_is_true(model,
-    expression=expression,
+    expression_left_hand_side=expression_left_hand_side,
+    expression_right_hand_side=expression_right_hand_side,
     group_by_columns=group_by,
     row_condition=row_condition)
     }}

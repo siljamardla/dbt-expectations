@@ -1,24 +1,26 @@
 {% test expression_is_true(model,
-                                 expression,
+                                 expression_left_hand_side,
+                                 expression_right_hand_side,
                                  test_condition="= true",
                                  group_by_columns=None,
                                  row_condition=None
                                  ) %}
 
-    {{ dbt_expectations.expression_is_true(model, expression, test_condition, group_by_columns, row_condition) }}
+    {{ dbt_expectations.expression_is_true(model, expression_left_hand_side, expression_right_hand_side, test_condition, group_by_columns, row_condition) }}
 
 {% endtest %}
 
 {% macro expression_is_true(model,
-                                 expression,
+                                 expression_left_hand_side,
+                                 expression_right_hand_side,
                                  test_condition="= true",
                                  group_by_columns=None,
                                  row_condition=None
                                  ) %}
-    {{ adapter.dispatch('expression_is_true', 'dbt_expectations') (model, expression, test_condition, group_by_columns, row_condition) }}
+    {{ adapter.dispatch('expression_is_true', 'dbt_expectations') (model, expression_left_hand_side, expression_right_hand_side, test_condition, group_by_columns, row_condition) }}
 {%- endmacro %}
 
-{% macro default__expression_is_true(model, expression, test_condition, group_by_columns, row_condition) -%}
+{% macro default__expression_is_true(model, expression_left_hand_side, expression_right_hand_side, test_condition, group_by_columns, row_condition) -%}
 with grouped_expression as (
     select
         {% if group_by_columns %}
@@ -26,7 +28,7 @@ with grouped_expression as (
         {{ group_by_column }} as col_{{ loop.index }},
         {% endfor -%}
         {% endif %}
-        {{ dbt_expectations.truth_expression(expression) }}
+        {{ dbt_expectations.truth_expression(expression_left_hand_side, expression_right_hand_side) }}
     from {{ model }}
      {%- if row_condition %}
     where
