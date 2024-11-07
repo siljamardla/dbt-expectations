@@ -25,7 +25,7 @@ count(*)
 {{ value }}
 {% endset %}
 
-{{ dbt_expectations.expression_is_true(model,
+{{ dbt_expectations.expression_is_true_modified(model,
     expression_left_hand_side=expression_left_hand_side,
     expression_right_hand_side=expression_right_hand_side,
     group_by_columns=group_by,
